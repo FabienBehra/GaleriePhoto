@@ -214,7 +214,11 @@ class ImageDAO {
 	}
 
 	function getRandomImageCategory($category){
-		$tabCategories = $this->getImagesByCategory();
+		return $this->getRandomImagesCategory($category);
+	}
+
+	function getRandomImagesCategory($category){
+		$tabCategories = $this->getImagesByCategory($category);
 		if(count($tabCategories)>0){
 			$index = rand (0,count($tabCategories));
 			return $tabCategories[$index];

@@ -111,15 +111,24 @@ require_once("model/imageDAO.php");
       require_once('view/viewMain.php');
     }
 
+
+    //bug à corriger
     function random(){
       global $data,$imgId,$imgURL,$imgSize,$category;
       $this->getParam();
 
-      $newImg = $this->dao->getRandomImage();
+      if($this->isCategory()){
+        $tabCategories = $this->getTabCategory();
+        $newImg = $this->dao->getRandomImageCategory($category);
+      }else{
+        $newImg = $this->dao->getRandomImage();
+      }
+
       $data->content="viewPhoto.php";
       $data->imageId = $newImg->getId();
       $data->imageURL = $newImg->getURL();
       $data->imageSize = $imgSize;
+      $data->category = $category;
       require_once('view/viewMain.php');
     }
 
