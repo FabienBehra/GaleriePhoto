@@ -90,12 +90,13 @@ class ImageDAO {
 		return $img;
 	}
 
-	function getNextImageCategory(image $img){
+	function getNextImageCategory($category, image $img){
+		$oldImage = $img;
 		$id = $img->getId();
 		if ($id < $this->size()) {
-			$img = $this->getImageByCategory($id+1);
+			$img = $this->getImageByCategory($category, $id+1);
 		}
-		return $img;
+		return (!is_null($img))? $img : $oldImage;
 	}
 
 	# Retourne l'image précédente d'une image
@@ -107,12 +108,13 @@ class ImageDAO {
 		return $img;
 	}
 
-	function getPrevImageCategory(image $img){
+	function getPrevImageCategory($category, image $img){
+		$oldImage = $img;
 		$id = $img->getId();
 		if ($id >1) {
-			$img = $this->getImageByCategory($id-1);
+			$img = $this->getImageByCategory($category, $id-1);
 		}
-		return $img;
+		return (!is_null($img)) ? $img : $oldImage;
 	}
 
 	# saute en avant ou en arrière de $nb images
@@ -167,13 +169,12 @@ class ImageDAO {
 
 	function getImagesByCategory($category){
 		$query = $this->db->query('SELECT * FROM image WHERE category=\''.$category.'\'');
-
+		$tab = [];
 		if ($query) {
 			$result = $query->fetchAll();
 			for ($i=0; $i < count($result); $i++) {
 				$tab[$i]= new Image($this->path.$result[$i]["path"],$result[$i]["id"], $result[$i]["category"], $result[$i]["comment"]);
 			}
-
 			return $tab;
 		} else {
 			print "Error in getImagesByCategory. category=".$category."<br/>";
@@ -182,17 +183,22 @@ class ImageDAO {
 		}
 	}
 
-	function getImageByCategory($category){
-		$query = $this->db->query('SELECT * FROM image WHERE category=\''.$category.'\'');
+	function getImageByCategory($category, $id){
+		$tabCategories = $this->getImagesByCategory($category);
+		if ($id <0){
+			return $this->getFirstImage();
+		}else if($id >$this->size()-1){
+			return $this->getImage($this->size()-1);
+		}
 
-		if ($query) {
-			$result = $query->fetch();
-				$img= new Image($this->path.$result["path"],$result["id"], $result["category"], $result["comment"]);
-			return $img;
-		} else {
-			print "Error in getImagesByCategory. category=".$category."<br/>";
-			$err= $this->db->errorInfo();
-			print $err[2]."<br/>";
+		for($i=0; $i<count($tabCategories); $i++){
+			if($tabCategories[$i]->getId() == $id){
+				if($i <= count($tabCategories)-1){
+					return ($i>=0) ? $tabCategories[$i] : $tabCategories[0];
+				}else{
+					return $tabCategories[count($tabCategories)-1];
+				}
+			}
 		}
 	}
 

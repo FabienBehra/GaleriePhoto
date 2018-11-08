@@ -59,8 +59,6 @@ require_once("model/imageDAO.php");
       global $data,$imgId,$imgURL,$imgSize,$category;
       $this->getParam();
 
-      echo $category;
-
       if($this->isCategory()){
         $tabCategories = $this->getTabCategory();
         $data->imageURL=$this->dao->getFirstImageCategory($category)->getURL();
@@ -80,9 +78,16 @@ require_once("model/imageDAO.php");
       global $data,$imgId,$imgURL,$imgSize,$category;
       $this->getParam();
 
+      if($this->isCategory()){
+        $tabCategories = $this->getTabCategory();
+        $data->imageURL=$this->dao->getPrevImageCategory($category, $this->dao->getImage($imgId))->getURL();
+        $data->imageId = $this->dao->getPrevImageCategory($category, $this->dao->getImage($imgId))->getId();
+      }else{
+        $data->imageId = $this->dao->getPrevImage($this->dao->getImage($imgId))->getId(); // id de la prochaine image
+        $data->imageURL = $this->dao->getPrevImage($this->dao->getImage($imgId))->getURL();
+      }
       $data->content="viewPhoto.php";
-      $data->imageId = $this->dao->getPrevImage($this->dao->getImage($imgId))->getId(); // id de la prochaine image
-      $data->imageURL = $this->dao->getPrevImage($this->dao->getImage($imgId))->getURL();
+      $data->category = $category;
       $data->imageSize = $imgSize;
       require_once('view/viewMain.php');
     }
@@ -91,9 +96,17 @@ require_once("model/imageDAO.php");
       global $data,$imgId,$imgURL,$imgSize,$category;
       $this->getParam();
 
+      if($this->isCategory()){
+        $tabCategories = $this->getTabCategory();
+        $data->imageURL=$this->dao->getNextImageCategory($category, $this->dao->getImage($imgId))->getURL();
+        $data->imageId = $this->dao->getNextImageCategory($category, $this->dao->getImage($imgId))->getId();
+      }else{
+        $data->imageId = $this->dao->getNextImage($this->dao->getImage($imgId))->getId(); // id de la prochaine image
+        $data->imageURL = $this->dao->getNextImage($this->dao->getImage($imgId))->getURL();
+      }
+
       $data->content="viewPhoto.php";
-      $data->imageId = $this->dao->getNextImage($this->dao->getImage($imgId))->getId(); // id de la prochaine image
-      $data->imageURL = $this->dao->getNextImage($this->dao->getImage($imgId))->getURL();
+      $data->category = $category;
       $data->imageSize = $imgSize;
       require_once('view/viewMain.php');
     }
