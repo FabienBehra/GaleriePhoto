@@ -41,7 +41,7 @@ class ImageDAO {
 	}
 
 	function __construct() {
-		$dsn = 'sqlite:../image/model/data/imageDB'; // Data source name
+		$dsn = 'sqlite:model/data/imageDB'; // Data source name
 		$user= ''; // Utilisateur
 		$pass= ''; // Mot de passe
 		try {$this->db = new PDO($dsn, $user, $pass); //$db est un attribut privé d'ImageDAO
@@ -90,11 +90,27 @@ class ImageDAO {
 		return $img;
 	}
 
+	function getNextImageCategory(image $img){
+		$id = $img->getId();
+		if ($id < $this->size()) {
+			$img = $this->getImageByCategory($id+1);
+		}
+		return $img;
+	}
+
 	# Retourne l'image précédente d'une image
 	function getPrevImage(image $img) {
 		$id = $img->getId();
 		if ($id >1) {
 			$img = $this->getImage($id-1);
+		}
+		return $img;
+	}
+
+	function getPrevImageCategory(image $img){
+		$id = $img->getId();
+		if ($id >1) {
+			$img = $this->getImageByCategory($id-1);
 		}
 		return $img;
 	}
@@ -166,8 +182,22 @@ class ImageDAO {
 		}
 	}
 
+	function getImageByCategory($category){
+		$query = $this->db->query('SELECT * FROM image WHERE category=\''.$category.'\'');
+
+		if ($query) {
+			$result = $query->fetch();
+				$img= new Image($this->path.$result["path"],$result["id"], $result["category"], $result["comment"]);
+			return $img;
+		} else {
+			print "Error in getImagesByCategory. category=".$category."<br/>";
+			$err= $this->db->errorInfo();
+			print $err[2]."<br/>";
+		}
+	}
+
 	function getFirstImageCategory($category){
-		$tabCategories = $this->getImagesByCategory();
+		$tabCategories = $this->getImagesByCategory($category);
 		if(count($tabCategories)>0){
 			return $tabCategories[0];
 		}else{
