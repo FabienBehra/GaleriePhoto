@@ -1,0 +1,38 @@
+body {
+  width: 100%;
+  font-family:"verdana", "arial", "sans-serif";  margin-left: auto;
+  margin-right: auto;
+  color: 	#2F4F4F;
+  margin-top: 0;
+}
+
+#entete {
+ text-align: center;
+
+}
+#corps{
+  width: 90vw;
+  margin-left: 5vw;
+  text-align: center;
+	overflow:hidden;
+ }
+
+/*Affichage des images*/
+#corps > img{
+  border-radius: 10px;
+}
+
+#parameters > *{
+  display: inline-block;
+  margin: 1%;
+}
+
+#corps a:link, a:visited, a:active {
+  color: #483D8B; }
+#corps a:hover { color: #FFFFFF;  font-style: italic;  background-color: #99CCCC;
+  }
+#pied {
+	margin-top: 20px;
+	border: 1px dotted navy;
+	clear:left;
+  }
