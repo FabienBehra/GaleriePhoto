@@ -139,6 +139,7 @@ require_once("model/imageDAO.php");
       $data->content="viewPhoto.php";
       $data->imageSize = $imgSize*0.8;
       $data->imageId=$imgId;
+      $data->category = $category;
       $data->imageURL= $this->dao->getImage($imgId)->getURL();
       require_once('view/viewMain.php');
     }
@@ -150,6 +151,7 @@ require_once("model/imageDAO.php");
       $data->content="viewPhoto.php";
       $data->imageSize = ($imgSize*1.25);
       $data->imageId=$imgId;
+      $data->category = $category;
       $data->imageURL= $this->dao->getImage($imgId)->getURL();
       require_once('view/viewMain.php');
     }
