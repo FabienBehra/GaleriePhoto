@@ -17,6 +17,8 @@
 				$imgSize = $data->imageSize;
 				$categories = $data->categories;
 				$category = $data->category;
+				$description = $data->description;
+
 
 				# Mise en place du menu
 	      $data->menu['Home']="index.php";
@@ -62,6 +64,7 @@
 
 			print "</div>";
 				print "<img src=\"$imgURL\" width=\"$imgSize\">\n";
+				print "<p class='description'>".$data->description."</p>";
 			?>
 		</div>
 		<div id="pied_de_page"></div>

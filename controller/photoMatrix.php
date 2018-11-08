@@ -219,6 +219,7 @@ class PhotoMatrix{
       $data->nbImages=(int)$nbImages/2;
     }else{ // si il n'y a plus qu'une seule image , on arrete de diviser le nombre d'images par 2
       $data->nbImages =1;
+      $data->content="viewPhoto.php";
     }
 
     if($this->isCategory()){

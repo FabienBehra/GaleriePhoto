@@ -220,7 +220,7 @@ class ImageDAO {
 	function getRandomImagesCategory($category){
 		$tabCategories = $this->getImagesByCategory($category);
 		if(count($tabCategories)>0){
-			$index = rand (0,count($tabCategories));
+			$index = rand (0,count($tabCategories)-1);
 			return $tabCategories[$index];
 		}else{
 			print "Error in jumpToImageCategory. category=".$category." n'existe pas ou ne contient aucune image <br/>";

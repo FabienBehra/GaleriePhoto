@@ -17,6 +17,7 @@ require_once("model/imageDAO.php");
       global $imgSize;
       global $data;
       global $category;
+      global $description;
 
       if(isset($_GET['imgId'])){ //id de l'image courante
         $imgId = $_GET['imgId'];
@@ -53,19 +54,27 @@ require_once("model/imageDAO.php");
       if(isset($_GET['category'])){
         $category = urldecode($_GET['category']);
       }
+
+      if(isset($_GET['description'])){ //id de l'image courante
+        $imgSize = $_GET['description'];
+      }else{
+        $description="AUCUNE DESCRIPTION";
+      }
     }
 
     function first(){
-      global $data,$imgId,$imgURL,$imgSize,$category;
+      global $data,$imgId,$imgURL,$imgSize,$category,$description;
       $this->getParam();
 
       if($this->isCategory()){
         $tabCategories = $this->getTabCategory();
         $data->imageURL=$this->dao->getFirstImageCategory($category)->getURL();
         $data->imageId = $this->dao->getFirstImageCategory($category)->getId();
+        $data->description = $this->dao->getFirstImageCategory($category)->getDescription();
       }else{
         $data->imageURL=$this->dao->getFirstImage()->getURL();
         $data->imageId = $this->dao->getFirstImage()->getId();
+        $data->description = $this->dao->getFirstImage()->getDescription();
       }
       $data->content="viewPhoto.php";
       $data->imageSize = $imgSize;
@@ -75,16 +84,18 @@ require_once("model/imageDAO.php");
     }
 
     function prev(){
-      global $data,$imgId,$imgURL,$imgSize,$category;
+      global $data,$imgId,$imgURL,$imgSize,$category,$description;
       $this->getParam();
 
       if($this->isCategory()){
         $tabCategories = $this->getTabCategory();
         $data->imageURL=$this->dao->getPrevImageCategory($category, $this->dao->getImage($imgId))->getURL();
         $data->imageId = $this->dao->getPrevImageCategory($category, $this->dao->getImage($imgId))->getId();
+        $data->description = $this->dao->getPrevImageCategory($category, $this->dao->getImage($imgId))->getDescription();
       }else{
         $data->imageId = $this->dao->getPrevImage($this->dao->getImage($imgId))->getId(); // id de la prochaine image
         $data->imageURL = $this->dao->getPrevImage($this->dao->getImage($imgId))->getURL();
+        $data->description = $this->dao->getPrevImage($this->dao->getImage($imgId))->getDescription();
       }
       $data->content="viewPhoto.php";
       $data->category = $category;
@@ -93,16 +104,18 @@ require_once("model/imageDAO.php");
     }
 
     function next(){
-      global $data,$imgId,$imgURL,$imgSize,$category;
+      global $data,$imgId,$imgURL,$imgSize,$category,$description;
       $this->getParam();
 
       if($this->isCategory()){
         $tabCategories = $this->getTabCategory();
         $data->imageURL=$this->dao->getNextImageCategory($category, $this->dao->getImage($imgId))->getURL();
         $data->imageId = $this->dao->getNextImageCategory($category, $this->dao->getImage($imgId))->getId();
+        $data->description = $this->dao->getNextImageCategory($category, $this->dao->getImage($imgId))->getDescription();
       }else{
         $data->imageId = $this->dao->getNextImage($this->dao->getImage($imgId))->getId(); // id de la prochaine image
         $data->imageURL = $this->dao->getNextImage($this->dao->getImage($imgId))->getURL();
+        $data->description = $this->dao->getNextImage($this->dao->getImage($imgId))->getDescription();
       }
 
       $data->content="viewPhoto.php";
@@ -114,7 +127,7 @@ require_once("model/imageDAO.php");
 
     //bug à corriger
     function random(){
-      global $data,$imgId,$imgURL,$imgSize,$category;
+      global $data,$imgId,$imgURL,$imgSize,$category, $description;
       $this->getParam();
 
       if($this->isCategory()){
@@ -127,30 +140,33 @@ require_once("model/imageDAO.php");
       $data->content="viewPhoto.php";
       $data->imageId = $newImg->getId();
       $data->imageURL = $newImg->getURL();
+      $data->description = $newImg->getDescription();
       $data->imageSize = $imgSize;
       $data->category = $category;
       require_once('view/viewMain.php');
     }
 
     function zoomLess(){
-      global $data,$imgId,$imgURL,$imgSize,$category;
+      global $data,$imgId,$imgURL,$imgSize,$category, $description;
       $this->getParam();
 
       $data->content="viewPhoto.php";
       $data->imageSize = $imgSize*0.8;
       $data->imageId=$imgId;
+      $data->description =$description;
       $data->category = $category;
       $data->imageURL= $this->dao->getImage($imgId)->getURL();
       require_once('view/viewMain.php');
     }
 
     function zoomMore(){
-      global $data,$imgId,$imgURL,$imgSize,$category;
+      global $data,$imgId,$imgURL,$imgSize,$category, $description;
       $this->getParam();
 
       $data->content="viewPhoto.php";
       $data->imageSize = ($imgSize*1.25);
       $data->imageId=$imgId;
+      $data->description = $description;
       $data->category = $category;
       $data->imageURL= $this->dao->getImage($imgId)->getURL();
       require_once('view/viewMain.php');
