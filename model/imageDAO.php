@@ -48,7 +48,6 @@ class ImageDAO {
 		} catch (PDOException $e) { die ("Erreur : ".$e->getMessage());
 		}
 	}
-
 	# Retourne le nombre d'images référencées dans/var/www/html/sites/image le DAO
 	function size() {
 		$s = $this->db->query('SELECT count(*) FROM image');
@@ -93,10 +92,27 @@ class ImageDAO {
 	function getNextImageCategory($category, image $img){
 		$oldImage = $img;
 		$id = $img->getId();
-		if ($id < $this->size()) {
-			$img = $this->getImageByCategory($category, $id+1);
+
+		$s = $this->db->query("SELECT * FROM image WHERE id > $id AND category= '$category'");
+		$result= $s->fetch();
+		return ($result!=false)? $this->getImage($result["id"]) : $oldImage;
+		/*
+		if ($id <0){
+			return $this->getFirstImage();
+		}else if($id >$this->size()-1){
+			return $this->getImage($this->size()-1);
 		}
-		return (!is_null($img))? $img : $oldImage;
+
+		for($i=0; $i<count($tabCategories); $i++){
+			if($img->getId() == $i){
+				if($i <= count($tabCategories)-1){
+					return ($i>=0) ? $tabCategories[$i+1] : $tabCategories[0];
+				}else{
+					return $tabCategories[count($tabCategories)-1];
+				}
+			}
+		}
+		return (!is_null($img))? $img : $oldImage;*/
 	}
 
 	# Retourne l'image précédente d'une image
@@ -109,12 +125,13 @@ class ImageDAO {
 	}
 
 	function getPrevImageCategory($category, image $img){
+		$tabCategories = $this->getImagesByCategory($category);
 		$oldImage = $img;
 		$id = $img->getId();
-		if ($id >1) {
-			$img = $this->getImageByCategory($category, $id-1);
-		}
-		return (!is_null($img)) ? $img : $oldImage;
+
+		$s = $this->db->query("SELECT * FROM image WHERE id < $id AND category= '$category' ORDER BY ID DESC LIMIT 1");
+		$result= $s->fetch();
+		return ($result!=false)? $this->getImage($result["id"]) : $oldImage;
 	}
 
 	# saute en avant ou en arrière de $nb images
@@ -180,25 +197,6 @@ class ImageDAO {
 			print "Error in getImagesByCategory. category=".$category."<br/>";
 			$err= $this->db->errorInfo();
 			print $err[2]."<br/>";
-		}
-	}
-
-	function getImageByCategory($category, $id){
-		$tabCategories = $this->getImagesByCategory($category);
-		if ($id <0){
-			return $this->getFirstImage();
-		}else if($id >$this->size()-1){
-			return $this->getImage($this->size()-1);
-		}
-
-		for($i=0; $i<count($tabCategories); $i++){
-			if($tabCategories[$i]->getId() == $id){
-				if($i <= count($tabCategories)-1){
-					return ($i>=0) ? $tabCategories[$i] : $tabCategories[0];
-				}else{
-					return $tabCategories[count($tabCategories)-1];
-				}
-			}
 		}
 	}
 
@@ -279,6 +277,12 @@ class ImageDAO {
 				return $i;
 			}
 		}
+	}
+
+	function afficheError($value){
+		echo "<pre>";
+		var_dump($value);
+		echo "</pre>";
 	}
 }
 
