@@ -44,6 +44,7 @@
 			<h1>Galerie photos</h1>
 		</div>
 		<div id="corps">
+			
 			<?php
 			print "<div id=parameters>";
 				print "<form method='post' action='index.php?controller=photo'>";

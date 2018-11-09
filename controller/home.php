@@ -9,6 +9,7 @@
       $data->menu['Home']="index.php";
       $data->menu['A propos']="index.php?controller=home&action=aPropos";
       $data->menu['Voir photos']="index.php?controller=photo&action=index";
+      $data->menu['Ajouter une image']="index.php?controller=ajoutImage&action=ajoutImage";
     }
 
     function index(){
