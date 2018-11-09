@@ -65,6 +65,7 @@
 			print "</div>";
 				print "<img src=\"$imgURL\" width=\"$imgSize\">\n";
 				print "<p class='description'>".$data->description."</p>";
+				print "<input type='text' placeholder=$data->category class='description'/>"
 			?>
 		</div>
 		<div id="pied_de_page"></div>
