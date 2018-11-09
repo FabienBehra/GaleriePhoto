@@ -12,7 +12,8 @@
 			  $menu=$data->menu;
 				$menu['Home'];
 				$menu['A propos'];
-				$menu['Voir photos'];
+				$menu['Voir photos'];				
+        $menu['Ajouter une image'];
 				foreach ($menu as $item => $act) {
 					print "<a href=\"$act\">$item</a>\n";
 				}

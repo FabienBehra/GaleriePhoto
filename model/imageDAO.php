@@ -286,6 +286,13 @@ class ImageDAO {
 	}
 }
 
+function ajoutImageDao(){
+	$root = $_SERVER['DOCUMENT_ROOT'] . '/';
+	$repertoire_upload_absolu   = $root . 'sites/MI3-PHP/projetPHP/GaleriePhoto/model/IMG/jons/upload';
+	$the_name = $_FILES['mon_fichier']['name'];
+	$result = move_uploaded_file($_FILES['mon_fichier']['tmp_name'], $repertoire_upload_absolu.$the_name);
+}
+
 
 
 # Test unitaire
