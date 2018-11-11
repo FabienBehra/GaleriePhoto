@@ -6,6 +6,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<link rel="stylesheet" type="text/css" href="style/style.css" media="screen" title="Normal" />
 		<link rel="stylesheet" type="text/css" href="style/navbar.css"/>
+		<script type="text/javascript" src="scripts/jQuery.min.js"></script>
 		</head>
 	<body>
 		<div>
@@ -44,9 +45,9 @@
 			<h1>Galerie photos</h1>
 		</div>
 		<div id="corps">
-			
+
 			<?php
-			print "<div id=parameters>";
+			print "<div id='parameters'>";
 				print "<form method='post' action='index.php?controller=photo'>";
 					print "<select id='categories' name='category'>";
 					print "<option value=\"all\">Toutes</option>";
@@ -65,10 +66,24 @@
 
 			print "</div>";
 				print "<img src=\"$imgURL\" width=\"$imgSize\">\n";
-				print "<p class='description'>".$data->description."</p>";
-				print "<input type='text' placeholder=$data->category class='description'/>"
+
+				
+			print "<div id='modifPhoto'>";
+				print "<form method='post' action='index.php?controller=photo&action=changerPhoto'";
+					print "<label>Changer description : </label>";
+					print "<input name='changeDescription' type='text' placeholder=$data->description class='description'/></br>";
+					print "<label>Changer Catégorie : </label>";
+					print "<input name='changeCategory' type='text' placeholder=$data->category class='category'/>";
+
+					print "<input type=\"submit\" value=\"Modifier\">";
+				print "</form>";
+			print "</div>";
 			?>
 		</div>
 		<div id="pied_de_page"></div>
+
+<script>
+</script>
+
 	</body>
 </html>

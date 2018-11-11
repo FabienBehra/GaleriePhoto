@@ -18,6 +18,8 @@ require_once("model/imageDAO.php");
       global $data;
       global $category;
       global $description;
+      global $newDescription;
+      global $newCategory;
 
       if(isset($_GET['imgId'])){ //id de l'image courante
         $imgId = $_GET['imgId'];
@@ -46,6 +48,18 @@ require_once("model/imageDAO.php");
       //récupération du formulaire
       if(isset($_POST['category'])){
         $category = urldecode($_POST['category']);
+      }else{
+        $category = "all";
+      }
+
+      if(isset($_POST['changeCategory'])){
+        $category = urldecode($_POST['changeCategory']);
+      }else{
+        $category = "all";
+      }
+
+      if(isset($_POST['changeDescription'])){
+        $category = urldecode($_POST['changeDescription']);
       }else{
         $category = "all";
       }
@@ -124,8 +138,15 @@ require_once("model/imageDAO.php");
       require_once('view/viewMain.php');
     }
 
+    function changerPhoto(){
+      global $data,$imgId,$imgURL,$imgSize,$category, $description, $newDescription, $newCategory;
+      $this->getParam();
+      //check si champs vides
 
-    //bug à corriger
+      $this->dao->changeCategory($imgId, $newCategory);
+      $this->dao->changeDescription($imgId, $newCategory);
+    }
+
     function random(){
       global $data,$imgId,$imgURL,$imgSize,$category, $description;
       $this->getParam();

@@ -294,6 +294,11 @@ function ajoutImageDao(){
 }
 
 
+function changeDescription($idImg, $description){
+	//à finir
+	$query = $this->db->query('SELECT * FROM image WHERE category=\''.$category.'\'');
+}
+
 
 # Test unitaire
 # Appeler le code PHP depuis le navigateur avec la variable test
