@@ -96,23 +96,6 @@ class ImageDAO {
 		$s = $this->db->query("SELECT * FROM image WHERE id > $id AND category= '$category'");
 		$result= $s->fetch();
 		return ($result!=false)? $this->getImage($result["id"]) : $oldImage;
-		/*
-		if ($id <0){
-			return $this->getFirstImage();
-		}else if($id >$this->size()-1){
-			return $this->getImage($this->size()-1);
-		}
-
-		for($i=0; $i<count($tabCategories); $i++){
-			if($img->getId() == $i){
-				if($i <= count($tabCategories)-1){
-					return ($i>=0) ? $tabCategories[$i+1] : $tabCategories[0];
-				}else{
-					return $tabCategories[count($tabCategories)-1];
-				}
-			}
-		}
-		return (!is_null($img))? $img : $oldImage;*/
 	}
 
 	# Retourne l'image précédente d'une image
@@ -174,7 +157,7 @@ class ImageDAO {
 	}
 
 	function getCategories(){
-		$query = $this->db->query('SELECT distinct category FROM image');
+		$query = $this->db->query('SELECT distinct category FROM image ORDER BY category');
 		$result =$query->fetchAll();
 
 		for($i =0; $i<count($result);$i++){
@@ -227,35 +210,82 @@ class ImageDAO {
 		}
 	}
 
-	function jumpToImageCategory($category, image $img, $nb){
-		//$img = la dernière image actuellement affichée
-		$tabCategories = $this->getImagesByCategory($category); // on récupère les images de la catégorie
-		$index = $this->getIndex($tabCategories, $img); //on recupère l'index de l'image passée en paramètre
+	function jumpToImageCategory($category,image $img,$nb) {
+		$id = $img->getId();
 
-		echo $index."</br>";
+		if ($id < $this->size()) {
+			if($this->size()>= $id+$nb){
+				if($id+$nb>=1){ //si l'id de la nouvelle image est supérieure à 1
+					if($nb > 0){ // si on fait next
+						$query = $this->db->query("SELECT * FROM image WHERE id >= $id+$nb AND category='$category'");
+						$result =$query->fetch();// on recupère le premier élément
+					}else{
+						$nbLimit = sqrt($nb*$nb);
+						$query = $this->db->query("SELECT * FROM image WHERE id <= $id+$nb AND category='$category' ORDER BY id DESC LIMIT $nbLimit");
+						$result =$query->fetchAll();// on recupère le premier élément
 
-		if($index+$nb > count($tabCategories)){
-			return $tabCategories[$index];
-		}else if($index+$nb<0){
-			return $tabCategories[0];
-		}else{
-			return $tabCategories[$index+$nb];
+						// vu que les élément sont classe dans l'ordre décroissant, on veux le dernier soit celui qui a le plus petit id
+						$result = ($result) ? $result[count($result)-1] : $result;
+					}
+
+					if($result){
+						$img = $this->getImage($result["id"]);
+					}
+				}else{
+					$img = $this->getFirstImage();
+				}
+			}else{
+				$img = $this->getImage($this->size());
+			}
+
+			if($id<1){
+				$img =getFirstImageCategory($category);
+			}else{
+				return $img;
+			}
 		}
 	}
 
-	function getNextImagesCategory($category, image $img, $nb){ // validé
-		var_dump($img);
-		//toutes les images de la catégorie
-		$tabCategories = $this->getImagesByCategory($category);
-		//index de la prochaine première image dans le tableau  $tabCategories
-		$indexImg = $this->getIndex($tabCategories, $img)+1; // validé
-		$nbImagesRestantes = count($tabCategories) - $indexImg;
+	function getNextImagesCategory($category, image $img, $nb){
+		$oldImageId = $img->getId();
+		$newImage = $this->jumpToImageCategory($category, $img, $nb);
+		$newImageId= $newImage->getId();
+		$tab = [];
+		//requete
+		$query = $this->db->query("SELECT * FROM image WHERE id >= $newImageId AND category = '$category' LIMIT $nb");
+		$result = $query->fetchAll();
 
-		//si on veut afficher plus d'images que ce qu'il y en a, on affiche le nombre max
-		$nbImagesAAfficher = ($nb <= $nbImagesRestantes)? $nb : $nbImagesRestantes; // validé
+		//si le requete ne retourne aucune image on remet les deux anciennes
+		if(!$result){
+			echo "else";
+			$query = $this->db->query("SELECT * FROM image WHERE id >= $imgId AND category = '$category' LIMIT $nb");
+			$result = $query->fetchAll();
+		}
 
-		for($i= 0; $i < $nbImagesAAfficher ; $i++){
-			$tab[$i]=$tabCategories[$indexImg+$i];
+		for ($i=0; $i < count($result); $i++) {
+			$tab[$i]= new Image($this->path.$result[$i]["path"],$result[$i]["id"], $result[$i]["category"], $result[$i]["comment"]);
+		}
+		return $tab;
+	}
+
+	function getPrevImagesCategory($category, image $img, $nb){
+		$oldImageId = $img->getId();
+		$newImage = $this->jumpToImageCategory($category, $img, -$nb);
+		$newImageId= $newImage->getId();
+		$tab = [];
+
+		//requete
+		$query = $this->db->query("SELECT * FROM image WHERE id >= $newImageId AND category = '$category' LIMIT $nb");
+		$result = $query->fetchAll();
+
+		//si le requete ne retourne aucune image on remet les deux anciennes
+		if(!$result){
+			$query = $this->db->query("SELECT * FROM image WHERE id >= $imgId AND category = '$category' LIMIT $nb");
+			$result = $query->fetchAll();
+		}
+
+		for ($i=0; $i < count($result); $i++) {
+			$tab[$i]= new Image($this->path.$result[$i]["path"],$result[$i]["id"], $result[$i]["category"], $result[$i]["comment"]);
 		}
 		return $tab;
 	}
@@ -284,21 +314,32 @@ class ImageDAO {
 		var_dump($value);
 		echo "</pre>";
 	}
+
+	function ajoutImageDao(){
+		$root = $_SERVER['DOCUMENT_ROOT'] . '/';
+		$repertoire_upload_absolu   = $root . 'sites/MI3-PHP/projetPHP/GaleriePhoto/model/IMG/jons/upload';
+		$the_name = $_FILES['mon_fichier']['name'];
+		$result = move_uploaded_file($_FILES['mon_fichier']['tmp_name'], $repertoire_upload_absolu.$the_name);
+	}
+
+
+	function changeDescription($idImg, $description){
+		$query = $this->db->exec("UPDATE image set comment='$description' WHERE id = $idImg");
+		return ($query)? true : $this->throwErrorUpdate($idImg, $description);
+	}
+
+	function changeCategory($idImg, $category){
+		$query = $this->db->exec("UPDATE image set category='$category' WHERE id = $idImg");
+		return ($query)? true : $this->throwErrorUpdate($idImg, $category);
+	}
+
+	function throwErrorUpdate($idImg, $description){
+		print "Error in insert in database id= $idImg<br/>";
+		print "Error throwed by change $description<br/>";
+		$err= $this->db->errorInfo();
+		print $err[2]."<br/>";
+	}
 }
-
-function ajoutImageDao(){
-	$root = $_SERVER['DOCUMENT_ROOT'] . '/';
-	$repertoire_upload_absolu   = $root . 'sites/MI3-PHP/projetPHP/GaleriePhoto/model/IMG/jons/upload';
-	$the_name = $_FILES['mon_fichier']['name'];
-	$result = move_uploaded_file($_FILES['mon_fichier']['tmp_name'], $repertoire_upload_absolu.$the_name);
-}
-
-
-function changeDescription($idImg, $description){
-	//à finir
-	$query = $this->db->query('SELECT * FROM image WHERE category=\''.$category.'\'');
-}
-
 
 # Test unitaire
 # Appeler le code PHP depuis le navigateur avec la variable test

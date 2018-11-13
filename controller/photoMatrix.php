@@ -99,15 +99,21 @@ class PhotoMatrix{
     global $data,$imgId,$imgURL,$imgSize,$nbImages,$category;
     $this->getParam();
     $data->content = "viewPhotoMatrix.php";
-    $data->imageId = ($this->dao->jumpToImage($this->dao->getImage($imgId),-$nbImages)->getId()); //renvoie la première photo si on recule de trop d'images
-    $data->nbImages= $nbImages;
     $data->category = $category;
 
-    for($i =0; $i<$data->nbImages; $i++){
-      $data->matrix[$i]=$this->dao->getImage($data->imageId+$i)->getURL(); // on ajoute toutes les urls dans la matrice
-    }
+    $this->isCategory() ? $tabCategories = $this->getTabCategory() : $tabCategories = null; // il n'y a aucune catégorie choisie
 
-    $data->imageSize =  480 / sqrt($data->nbImages);
+    if($tabCategories!=null){ // si il y a des photos de la catégorie à afficher
+      $this->affichePrevMatrixCategory($category, $nbImages, $imgId);
+    }else{
+      $data->imageId = ($this->dao->jumpToImage($this->dao->getImage($imgId),-$nbImages)->getId()); //renvoie la première photo si on recule de trop d'images
+      $data->nbImages= $nbImages;
+      for($i =0; $i<$data->nbImages; $i++){
+        $data->matrix[$i]=$this->dao->getImage($data->imageId+$i)->getURL(); // on ajoute toutes les urls dans la matrice
+      }
+
+      $data->imageSize =  480 / sqrt($data->nbImages);
+    }
     require_once("view/viewMain.php");
   }
 
@@ -119,11 +125,8 @@ class PhotoMatrix{
 
     $this->isCategory() ? $tabCategories = $this->getTabCategory() : $tabCategories = null; // il n'y a aucune catégorie choisie
 
-    //si on demande + d'images qu'il y en a dans la catégorie
     if($tabCategories!=null){ // si il y a des photos de la catégorie à afficher
-      if(count($tabCategories)>0){
-        $this->afficheNextMatrixCategory($category, $nbImages, $imgId);
-      }
+      $this->afficheNextMatrixCategory($category, $nbImages, $imgId);
     }else{
       if($imgId + $nbImages >= $this->dao->size()){ // si on a deja afficher la derniere image
         $data->imageId = $imgId;
@@ -289,14 +292,24 @@ class PhotoMatrix{
       $data->imageId = $tabCategories[0]->getId();
       $data->imageSize =  480 / sqrt($nbImagesAAfficher);
     }
-    $data->nbImages = $nbImagesAAfficher;
+    $data->nbImages = $nbImages;
   }
 
   function afficheNextMatrixCategory($category, $nbImages, $imgId){
     global $data;
-    $newImage = $this->dao->jumpToImageCategory($category, $this->dao->getImage($imgId), $nbImages);
-    $tab = $this->dao->getNextImagesCategory($category,$newImage,$nbImages);
+    $image = $this->dao->getImage($imgId);
+    $tab = $this->dao->getNextImagesCategory($category, $image, $nbImages);
 
+    //$tab contient toutes les images possibles à afficher dans la limite de nbImages
+    $this->afficheMatrixCategory($tab, $nbImages);
+  }
+
+  function affichePrevMatrixCategory($category, $nbImages, $imgId){
+    global $data;
+    $image = $this->dao->getImage($imgId);
+    $tab = $this->dao->getPrevImagesCategory($category, $image, $nbImages);
+
+    //$tab contient toutes les images possibles à afficher dans la limite de nbImages
     $this->afficheMatrixCategory($tab, $nbImages);
   }
 }

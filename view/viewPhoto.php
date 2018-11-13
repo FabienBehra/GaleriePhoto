@@ -16,9 +16,10 @@
 			  $imgId = $data->imageId;
 				$imgURL =$data->imageURL;
 				$imgSize = $data->imageSize;
+				$imgDescription = $data->imageDescription;
+				$imgCategory = $data->imageCategory;
 				$categories = $data->categories;
 				$category = $data->category;
-				$description = $data->description;
 
 
 				# Mise en place du menu
@@ -67,13 +68,13 @@
 			print "</div>";
 				print "<img src=\"$imgURL\" width=\"$imgSize\">\n";
 
-				
+
 			print "<div id='modifPhoto'>";
-				print "<form method='post' action='index.php?controller=photo&action=changerPhoto'";
+				print "<form method='post' action='index.php?controller=photo&action=changerPhoto&imgId=$imgId'>";
 					print "<label>Changer description : </label>";
-					print "<input name='changeDescription' type='text' placeholder=$data->description class='description'/></br>";
+					print "<input name='changeDescription' type='text' placeholder='$imgDescription' class='description'/></br>";
 					print "<label>Changer Catégorie : </label>";
-					print "<input name='changeCategory' type='text' placeholder=$data->category class='category'/>";
+					print "<input name='changeCategory' type='text' placeholder='$imgCategory' class='category'/>";
 
 					print "<input type=\"submit\" value=\"Modifier\">";
 				print "</form>";

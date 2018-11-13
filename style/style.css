@@ -31,6 +31,32 @@ body {
   color: #483D8B; }
 #corps a:hover { color: #FFFFFF;  font-style: italic;  background-color: #99CCCC;
   }
+
+#modifPhoto{
+  width: 50vw;
+  margin-left: 20vw;
+}
+
+#modifPhoto > form{
+  display: block;
+}
+
+#modifPhoto > form > * {
+  display: inline-block;
+  width: 20%;
+}
+
+#modifPhoto label{
+  text-align: right;
+  margin-right: 5%;
+}
+
+#modifPhoto input[type="submit"]{
+  display: block;
+  text-align: center;
+  margin-left: 40%;
+}
+
 #pied {
 	margin-top: 20px;
 	border: 1px dotted navy;
