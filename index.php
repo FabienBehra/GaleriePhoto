@@ -1,5 +1,6 @@
 <?php
   # Controleur frontal (front controler)
+  define ('SITE_ROOT', realpath(dirname(__FILE__)));
 
   # En fonction du controleur et de l'action en parametre lance le bon traitement
   # Recherche le nom du controleur

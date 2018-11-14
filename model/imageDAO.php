@@ -315,12 +315,11 @@ class ImageDAO {
 		echo "</pre>";
 	}
 
-	function ajoutImageDao(){
-		$root = $_SERVER['DOCUMENT_ROOT'] . '/';
-		$repertoire_upload_absolu   = $root . 'sites/MI3-PHP/projetPHP/GaleriePhoto/model/IMG/jons/upload';
-		$the_name = $_FILES['mon_fichier']['name'];
-		$result = move_uploaded_file($_FILES['mon_fichier']['tmp_name'], $repertoire_upload_absolu.$the_name);
+	function ajoutImage($imgId, $imgURL, $imgCategory, $imgDescription){
+		$query = $this->db->exec("INSERT INTO image VALUES ('$imgId','$imgURL','$imgCategory','$imgDescription')");
+		return ($query)? true : $this->throwErrorInsert($idImg, $description);
 	}
+
 
 
 	function changeDescription($idImg, $description){
@@ -334,8 +333,14 @@ class ImageDAO {
 	}
 
 	function throwErrorUpdate($idImg, $description){
-		print "Error in insert in database id= $idImg<br/>";
+		print "Error in update in database id= $idImg<br/>";
 		print "Error throwed by change $description<br/>";
+		$err= $this->db->errorInfo();
+		print $err[2]."<br/>";
+	}
+
+	function throwErrorInsert($idImg){
+		print "Error in insert in database id= $idImg<br/>";
 		$err= $this->db->errorInfo();
 		print $err[2]."<br/>";
 	}

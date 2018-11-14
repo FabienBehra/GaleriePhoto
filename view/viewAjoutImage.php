@@ -6,10 +6,13 @@
 		<link rel="stylesheet" type="text/css" href="style/style.css" media="screen" title="Normal" />
     <link rel="stylesheet" type="text/css" href="style/ajoutImage.css"/>
 		<link rel="stylesheet" type="text/css" href="style/navbar.css"/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		</head>
 	<body>
 		<div class="navbar">
 			<?php # Mise en place du menu par un parcours de la table associative
+				$categories = $data->categories;
+
 			  $menu=$data->menu;
 				$menu['Home'];
 				$menu['A propos'];
@@ -20,30 +23,58 @@
 				}
 				?>
 		</div>
-    <script>
-      function refreshImg(nom, fichier) {
-         document.getElementById(nom).src = "./img/"+fichier;
-      }
-    </script>
+
 
     <fieldset>
-      <form ENCTYPE="multipart/form-data" name="leform_upload" method="post" action="index.php?controller=ajoutImage&action=upload">
-        <input type="file" id="fichier" name="mon_fichier" onchange="refreshImg('picture', this.files[0].name)">
-        <img id="picture" />
+      <form enctype="multipart/form-data" name="uploadImage" method="post" action="index.php?controller=ajoutImage&action=upload">
+				<input type="file" name="fileToUpload" id="fileToUpload">
+  			<img id="picture" src="#" alt="your image"/>
 
-        <label for="rename">Nom de l'image</label>
-        <input type="text" name="rename" required>
-        <label for="catégorie">Choix de la catégorie</label>
+        <label for="imageDescription">Description de l'image</label>
+        <input type="text" name="imageDescription" required>
 
-        <select id="catégorie" name="">
-
+				<input id="hidden" type="hidden" name="imageName" value="">
+        <label for="imageCategory">Choix de la catégorie</label>
+        <select id="categories" name="imageCategory" required>
+					<?php
+						foreach ($categories as $value) {
+							if($value == $category){
+								$url_encode = urlencode($value);
+								print "<option selected value=\"$url_encode\">$value</option>";
+							}else{
+								$url_encode = urlencode($value);
+								print "<option value=\"$url_encode\">$value</option>";
+							}
+						}
+					?>
         </select>
-
-        <input type="submit" value="uploader le fichier">
+        <button name="submit" class="btn btn-primary" type="submit" value="submit">Upload File</button>
       </form>
 
     </fieldset>
 
 		<div id="pied_de_page"></div>
+
+		<script>
+
+			function previewPicture(input) {
+			  if (input.files && input.files[0]) {
+			    var reader = new FileReader();
+			    reader.onload = function(e) {
+			      $('#picture').attr('src', e.target.result);
+			    }
+			    reader.readAsDataURL(input.files[0]);
+					changeName(input.files[0])
+			  }
+			}
+
+			function changeName(file){
+				$("#hidden").val(file.name);
+			}
+
+			$("#fileToUpload").change(function() {
+			  previewPicture(this);
+			});
+    </script>
 		</body>
 	</html>
