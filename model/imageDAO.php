@@ -252,12 +252,12 @@ class ImageDAO {
 		$newImageId= $newImage->getId();
 		$tab = [];
 		//requete
+
 		$query = $this->db->query("SELECT * FROM image WHERE id >= $newImageId AND category = '$category' LIMIT $nb");
 		$result = $query->fetchAll();
 
 		//si le requete ne retourne aucune image on remet les deux anciennes
 		if(!$result){
-			echo "else";
 			$query = $this->db->query("SELECT * FROM image WHERE id >= $imgId AND category = '$category' LIMIT $nb");
 			$result = $query->fetchAll();
 		}
@@ -320,7 +320,12 @@ class ImageDAO {
 		return ($query)? true : $this->throwErrorInsert($idImg, $description);
 	}
 
+	function checkIfExist($imgURL){
+		$query = $this->db->query("SELECT * from image where path='$imgURL'");
+		$result =$query->fetch();
 
+		return $result;
+	}
 
 	function changeDescription($idImg, $description){
 		$query = $this->db->exec("UPDATE image set comment='$description' WHERE id = $idImg");

@@ -24,7 +24,11 @@
 	      $data->menu['First']="index.php?controller=photoMatrix&action=first&imgId=$imgId&imgSize=$imgSize&nbImages=$nbImages&category=".urlencode($category);
 	      $data->menu['Random']="index.php?controller=photoMatrix&action=random&imgId=$imgId&imgSize=$imgSize&nbImages=$nbImages&category=".urlencode($category);
 	      $data->menu['More']="index.php?controller=photoMatrix&action=more&imgId=$imgId&imgSize=$imgSize&nbImages=$nbImages&category=".urlencode($category);
-	      $data->menu['less']="index.php?controller=photoMatrix&action=less&imgId=$imgId&imgSize=$imgSize&nbImages=$nbImages&category=".urlencode($category);
+				if($nbImages == 2){
+					$data->menu['less']="index.php?controller=photo&action=afficheImage&imgId=$imgId&category=".urlencode($category);
+				}else{
+					$data->menu['less']="index.php?controller=photoMatrix&action=less&imgId=$imgId&imgSize=$imgSize&nbImages=$nbImages&category=".urlencode($category);
+				}
 				foreach ($data->menu as $item => $act) {
 					print "<a href=\"$act\">$item</a>\n";
 				}

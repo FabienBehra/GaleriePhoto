@@ -47,11 +47,20 @@ class ajoutImage
   function upload(){
     global $data, $imageId, $imageName, $imageDescription, $imageCategory, $imageURL;
     $this->getParam();
-    $this->setId();
-    $imageURL = "jons/uploadedImages/".$imageName;
-    $this->ajoutImageInDirectory();
+    if($imageDescription != "" && $imageCategory != ""){
+      $this->setId();
+      $imageURL = "jons/uploadedImages/".$imageName;
+      $this->ajoutImageInDirectory();
 
-    $this->dao->ajoutImage($imageId, $imageURL, $imageCategory, $imageDescription);
+      if(!$this->dao->checkIfExist($imageURL)){
+        $this->dao->ajoutImage($imageId, $imageURL, $imageCategory, $imageDescription);
+      }else{
+        echo "image déjà existante";
+      }
+    }else{
+      echo "données manquantes";
+    }
+
     $data->content="viewAjoutImage.php";
     require_once('view/viewMain.php');
   }
@@ -59,7 +68,6 @@ class ajoutImage
   function ajoutImageInDirectory(){
     $target_dir = "/model/IMG/jons/uploadedImages/";
     $target_file = $target_dir . basename($_FILES['fileToUpload']["name"]);
-    var_dump($target_file);
     $uploadOk = 1;
     $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
 

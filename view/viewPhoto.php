@@ -30,6 +30,7 @@
 	      $data->menu['Zoom +']="index.php?controller=photo&action=zoomMore&imgId=$imgId&imgSize=$imgSize&category=".urlencode($category);
 	      $data->menu['Zoom -']="index.php?controller=photo&action=zoomLess&imgId=$imgId&imgSize=$imgSize&category=".urlencode($category);
 	      $data->menu['More']="index.php?controller=photoMatrix&action=more&imgId=$imgId&imgSize=$imgSize&category=".urlencode($category);
+				$data->menu['Ajouter une image']="index.php?controller=ajoutImage";
 				foreach ($data->menu as $item => $act) {
 					print "<a href=\"$act\">$item</a>";
 				}

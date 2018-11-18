@@ -197,8 +197,8 @@ require_once("model/imageDAO.php");
       $data->content="viewPhoto.php";
       $data->imageSize = $imgSize*0.8;
       $data->imageId=$imgId;
-      $data->imageDescription =$imgDescription;
-      $data->imageCategory=$imgCategory;
+      $data->imageDescription =$this->dao->getImage($imgId)->getDescription();
+      $data->imageCategory=$this->dao->getImage($imgId)->getCategory();
       $data->category = $category;
       $data->imageURL= $this->dao->getImage($imgId)->getURL();
       require_once('view/viewMain.php');
@@ -211,8 +211,8 @@ require_once("model/imageDAO.php");
       $data->content="viewPhoto.php";
       $data->imageSize = ($imgSize*1.25);
       $data->imageId=$imgId;
-      $data->imageDescription =$imgDescription;
-      $data->imageCategory=$imgCategory;
+      $data->imageDescription =$this->dao->getImage($imgId)->getDescription();
+      $data->imageCategory=$this->dao->getImage($imgId)->getCategory();
       $data->category = $category;
       $data->imageURL= $this->dao->getImage($imgId)->getURL();
       require_once('view/viewMain.php');
@@ -222,6 +222,19 @@ require_once("model/imageDAO.php");
       global $data,$imgId,$imgURL,$imgSize,$category, $imgDescription, $imgCategory;
       $this->getParam();
       $this->first();
+    }
+
+    function afficheImage(){
+      global $data,$imgId,$imgURL,$imgSize,$category, $newDescription, $newCategory;
+      $this->getParam();
+      $data->content="viewPhoto.php";
+      $data->imageId=$imgId;
+      $data->imageDescription =$this->dao->getImage($imgId)->getDescription();
+      $data->imageCategory=$this->dao->getImage($imgId)->getCategory();
+      $data->category = $category;
+      $data->imageSize = $imgSize;
+      $data->imageURL= $this->dao->getImage($imgId)->getURL();
+      require_once('view/viewMain.php');
     }
 
     function getTabCategory(){

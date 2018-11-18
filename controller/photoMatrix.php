@@ -299,7 +299,7 @@ class PhotoMatrix{
     global $data;
     $image = $this->dao->getImage($imgId);
     $tab = $this->dao->getNextImagesCategory($category, $image, $nbImages);
-
+    $this->afficheError($tab);
     //$tab contient toutes les images possibles à afficher dans la limite de nbImages
     $this->afficheMatrixCategory($tab, $nbImages);
   }
